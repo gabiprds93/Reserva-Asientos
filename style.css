@@ -1,0 +1,19 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+table
+{
+    margin: 3% auto;
+    font-size: 25px;
+}
+td
+{
+    color: black;
+    background-color: white;
+    width: 65px;
+    height: 65px; 
+    border: 1px solid gray;
+}
