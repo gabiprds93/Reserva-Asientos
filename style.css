@@ -6,7 +6,7 @@
 }
 table
 {
-    margin: 3% auto;
+    margin: 3% 0;
     font-size: 25px;
 }
 td
@@ -16,4 +16,8 @@ td
     width: 65px;
     height: 65px; 
     border: 1px solid gray;
+}
+.oculto
+{
+    /display: none;
 }
