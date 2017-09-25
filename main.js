@@ -1,138 +1,193 @@
-let tablero = document.getElementById("tablero");
-var bus = new Bus();
-function crearCeldas(total)
+'use strict';
+let imputNombre = $("#nombre");
+let imputApellido = $("#apellido");
+let imputDni = $("#dni");
+let imputAsiento = $("#asiento");
+let contenedorListar = $("#contenedorListar");
+let btnEnviar = $("#btnEnviar");
+let btnReservar = $("#btnReservar");
+let btnLiberar = $("#btnLiberar");
+let btnBuscar = $("#btnBuscar");
+let btnCancelar = $("#btnCancelar");
+let btnCancelarListar = $("#btnCancelarListar");
+let selecAsientos = $("#selecAsientos");
+let tablero = $("#tablero");
+let secMenu = $("#secMenu");
+let secAsientosInfo = $("#secAsientosInfo");
+let secListar = $("#secListar");
+
+class Aplicacion
+{
+    constructor()
     {
-        let numFilas = total/5;
-        let numColum = total/2;
-        while(tablero.childNodes.length >= 1)
+        this.opcion = $("#opcion");
+        this.enfocar();
+    }
+    
+    enfocar()
+    {
+        this.opcion.val("");
+        this.opcion.focus();
+    }
+    comprobarOpcion()
+    {
+        if(this.opcion.val() == 1)
         {
-            tablero.removeChild(tablero.firstChild);
+            secMenu.addClass("oculto");
+            secAsientosInfo.removeClass("oculto");
+            selecAsientos.removeClass("oculto");
+            imputDni.removeAttr('disabled');
+            imputNombre.removeAttr('disabled');
+            imputApellido.removeAttr('disabled');
+            btnReservar.removeClass("oculto");
+            btnLiberar.addClass("oculto");
+            btnBuscar.addClass("oculto");
+            //btnCancelar.removeClass("oculto");
         }
-        for(let i = 0; i < numFilas; i++)
+        else if(this.opcion.val() == 2)
         {
-            let fila = document.createElement('tr');
-            for(let j = 0; j < numColum; j++)
-            {
-                let columna = document.createElement('td');
-                columna.id = `${i}${j}`;
-                columna.textContent = i * numColum + j + 1;
-                columna.className = "btn";
-                //columna.className = "btn-default";
-                columna.addEventListener("click", (event) => 
-                {
-                    bus.redirect(event);
-                });
-                fila.appendChild(columna);
-            }
-            tablero.appendChild(fila);
+            secMenu.addClass("oculto");
+            secAsientosInfo.removeClass("oculto");
+            selecAsientos.removeClass("oculto");
+            imputDni.attr('disabled', true);
+            imputNombre.attr('disabled', true);
+            imputApellido.attr('disabled', true);
+            btnReservar.addClass("oculto");
+            btnLiberar.removeClass("oculto");
+            btnBuscar.addClass("oculto");
+            //btnCancelar.removeClass("oculto");
+        }
+        else if(this.opcion.val() == 3)
+        {
+            secMenu.addClass("oculto");
+            secAsientosInfo.removeClass("oculto");
+            selecAsientos.addClass("oculto");
+            imputDni.removeAttr('disabled');
+            imputNombre.attr('disabled', true);
+            imputApellido.attr('disabled', true);
+            btnReservar.addClass("oculto");
+            btnLiberar.addClass("oculto");
+            btnBuscar.removeClass("oculto");
+            //btnCancelar.removeClass("oculto");
+        }
+        else if(this.opcion.val() == 4)
+        {
+            secMenu.addClass("oculto");
+            secAsientosInfo.addClass("oculto");
+            secListar.removeClass("oculto");
+            bus.listar();
+        }
+        else
+        {
+            alert("Opcion incorrecta. Vuelva a ingresar");
+            this.enfocar();
         }
     }
-crearCeldas(10);
-var imputNombre = document.getElementById("nombre");
-var imputApellido = document.getElementById("apellido");
-var imputDni = document.getElementById("dni");
-var imputAsiento = document.getElementById("asiento");
-var contenedorListar = document.getElementById("listar");
-let btnReservar = document.getElementById("btnReservar");
-for(var i = 0; i < bus.celdas.length; i++)
-{
-    //bus.celdas[i].onclick = function(event){
-      //  bus.redirect(event);
-    //};
-    bus.pasajeros[i] = new Pasajero(undefined, undefined, undefined, undefined);
 }
-btnReservar.onclick = function(e)
-{
-    e.preventDefault();
-    bus.reservar();
-};
 
-function Pasajero(nombre, apellido, dni, asiento)
+class Pasajero
 {
-    this.nombre = nombre;
-    this.apellido = apellido;
-    this.dni = dni;
-    this.asiento = asiento;
-    this.mostrar = function()
+    constructor(nombre, apellido, dni, asiento)
+    {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.dni = dni;
+        this.asiento = asiento;   
+    }
+    mostrar()
     {
         if(this.nombre != undefined)
         {
-            imputNombre.value = this.nombre;
-            imputApellido.value = this.apellido;
-            imputDni.value = this.dni;
-            imputAsiento.value = this.asiento;
+            imputNombre.val(this.nombre);
+            imputApellido.val(this.apellido);
+            imputDni.val(this.dni);
+            imputAsiento.val(this.asiento);
         }
         else
         {
             this.limpiarTodo(false);
         }
     }
-    this.limpiarTodo = function(todo)
+    limpiarTodo(todo)
     {
-        imputNombre.value = "";
-        imputApellido.value = "";
-        imputDni.value = "";
+        imputNombre.val("");
+        imputApellido.val("");
+        imputDni.val("");
         if(todo)
         {
-            imputAsiento.value = "";
+            imputAsiento.val("");
         }
     }
 }
 
-function Bus()
+class Bus
 {
-    this.pasajeros = [];
-    this.numAsiento = 0;
-    this.celdas = document.getElementsByTagName("td");
-    this.redirect = function(event)
+    constructor()
+    {
+        this.pasajeros = [];
+        this.numAsiento = 0;
+        this.crearCeldas(10);
+        this.celdas = $("td");
+        console.log(this.celdas);
+        for(let i = 0; i < this.celdas.length; i++)
+        {
+            this.pasajeros[i] = new Pasajero(undefined, undefined, undefined, undefined);
+        }
+        console.log(this.celdas.length)
+        console.log(this.pasajeros);
+    }
+    redireccionar(event)
     {
         this.numAsiento = (event.target.textContent);
-        imputAsiento.value = this.numAsiento;
+        imputAsiento.val(this.numAsiento);
+        console.log(this);
         this.pasajeros[this.numAsiento - 1].mostrar();
-        imputNombre.focus();
+        imputDni.focus();
         //contenedorListar.innerHTML = "";
     }
     
-    this.reservar = function(){
-        if(imputAsiento.value != "" && imputNombre.value != "" && imputApellido.value != "" && imputDni.value != "")
+    reservar()
+    {
+        if(imputAsiento.val() != "" && imputNombre.val() != "" && imputApellido.val() != "" && imputDni.val() != "")
         {
-            this.pasajeros[this.numAsiento - 1] = new Pasajero(imputNombre.value, imputApellido.value, imputDni.value, this.numAsiento);
+            this.pasajeros[this.numAsiento - 1] = new Pasajero(imputNombre.val(), imputApellido.val(), imputDni.val(), this.numAsiento);
             this.pasajeros[0].limpiarTodo(true);
-            for(var i in this.celdas)
+            for(let i in this.celdas)
             {
                 if(this.celdas[i].textContent == this.numAsiento)
                 {
-                    this.celdas[i].style = "background-color: #ffd1a3";
+                    this.celdas[i].classList.add("pintar");
                     break;
                 }
             }
         }
         else
         {
-            alert("Faltan datos");
+            alert("Faltan datos jkjkj");
             imputNombre.focus();
         }
     }
-    this.cancelar = function(){
+    liberar()
+    {
         if(this.pasajeros[this.numAsiento - 1].nombre != undefined)
         {
             this.pasajeros[this.numAsiento - 1] = new Pasajero(undefined, undefined, undefined, undefined);
             this.pasajeros[0].limpiarTodo(true);
         }
-        for(var i in this.celdas)
+        for(let i in this.celdas)
         {
             if(this.celdas[i].textContent == this.numAsiento)
             {
-                this.celdas[i].firstChild.style.backgroundColor = "";
+                this.celdas[i].classList.remove("pintar");
                 break;
             }
         }
     }
-    this.buscar = function(){
-        var dniBuscar = document.getElementById("dniBuscar");
-        for(var i in this.pasajeros)
+    buscar()
+    {
+        for(let i in this.pasajeros)
         {
-            if(dniBuscar.value == this.pasajeros[i].dni)
+            if(imputDni.val() == this.pasajeros[i].dni)
             {
                 this.pasajeros[i].mostrar();
                 break;
@@ -146,12 +201,13 @@ function Bus()
                 }
             }
         }
-        dniBuscar.value = "";
-        dniBuscar.focus();
+        //imputDni.val("");
+        imputDni.focus();
     }
-    this.listar = function(){
-        var contenedor = "";
-        for(var i in this.pasajeros)
+    listar()
+    {
+        let contenedor = "";
+        for(let i in this.pasajeros)
         {
             if(this.pasajeros[i].nombre != undefined)
             {
@@ -161,6 +217,79 @@ function Bus()
                 contenedor += "<b>Asiento:</b> " + this.pasajeros[i].asiento + "</p>";
             }
         }
-        contenedorListar.innerHTML = contenedor;
+        contenedorListar.html(contenedor);
+    }
+    crearCeldas(total)
+    {
+        let numFilas = total/5;
+        let numColum = total/2;
+        tablero.empty();
+        for(let i = 0; i < numFilas; i++)
+        {
+            let fila = $("<tr>");
+            for(let j = 0; j < numColum; j++)
+            {
+                let columna = $('<td>');
+                columna.id = `${i}${j}`;
+                columna.text(i * numColum + j + 1);
+                columna.addClass("btn");
+                columna.addClass("btn-default");
+                columna.click((event) => this.redireccionar(event));
+                fila.append(columna);
+            }
+            tablero.append(fila);
+        }
     }
 }
+let bus = new Bus();
+let apli = new Aplicacion();
+
+btnEnviar.click(function(e)
+{
+    e.preventDefault();
+    apli.comprobarOpcion();
+});
+
+btnReservar.click(function(e)
+{
+    e.preventDefault();
+    bus.reservar();
+    setTimeout(function()
+    {
+        secMenu.removeClass("oculto");
+        secAsientosInfo.addClass("oculto");
+        apli.enfocar();
+    }, 500);
+});
+
+btnLiberar.click(function(e)
+{
+    e.preventDefault();
+    bus.liberar();
+    setTimeout(function()
+    {
+        secMenu.removeClass("oculto");
+        secAsientosInfo.addClass("oculto");
+        apli.enfocar();
+    }, 500);
+});
+
+btnBuscar.click(function(e)
+{
+    e.preventDefault();
+    bus.buscar();
+});
+
+btnCancelar.click(function(e)
+{
+    e.preventDefault();
+    secMenu.removeClass("oculto");
+    secAsientosInfo.addClass("oculto");
+    apli.enfocar();
+});
+
+btnCancelarListar.click(function(e)
+{
+    btnCancelar.click();
+    secListar.addClass("oculto");
+});

@@ -19,5 +19,13 @@ td
 }
 .oculto
 {
-    /display: none;
+    display: none;
+}
+.pintar
+{
+    background-color: #ffd1a3
+}
+#secAsientosInfo, #secListar, .form-horizontal
+{
+    margin: 30px 0;
 }
