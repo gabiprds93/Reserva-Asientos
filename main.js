@@ -1,85 +1,81 @@
 'use strict';
-let imputNombre = $("#nombre");
-let imputApellido = $("#apellido");
-let imputDni = $("#dni");
-let imputAsiento = $("#asiento");
-let contenedorListar = $("#contenedorListar");
-let btnEnviar = $("#btnEnviar");
-let btnReservar = $("#btnReservar");
-let btnLiberar = $("#btnLiberar");
-let btnBuscar = $("#btnBuscar");
-let btnCancelar = $("#btnCancelar");
-let btnCancelarListar = $("#btnCancelarListar");
-let selecAsientos = $("#selecAsientos");
-let tablero = $("#tablero");
-let secMenu = $("#secMenu");
-let secAsientosInfo = $("#secAsientosInfo");
-let secListar = $("#secListar");
+let imputNombre = $(`#nombre`);
+let imputApellido = $(`#apellido`);
+let imputDni = $(`#dni`);
+let imputAsiento = $(`#asiento`);
+let btnEnviar = $(`#btnEnviar`);
+let btnReservar = $(`#btnReservar`);
+let btnLiberar = $(`#btnLiberar`);
+let btnBuscar = $(`#btnBuscar`);
+let btnCancelar = $(`#btnCancelar`);
+let btnCancelarListar = $(`#btnCancelarListar`);
 
 class Aplicacion
 {
     constructor()
     {
-        this.opcion = $("#opcion");
+        this.opcion = $(`#opcion`);
+        this.selecAsientos = $(`#selecAsientos`);
+        this.secMenu = $(`#secMenu`);
+        this.secAsientosInfo = $(`#secAsientosInfo`);
+        this.secListar = $(`#secListar`);
         this.enfocar();
     }
     
     enfocar()
     {
-        this.opcion.val("");
+        this.opcion.val(``);
         this.opcion.focus();
     }
     comprobarOpcion()
     {
         if(this.opcion.val() == 1)
         {
-            secMenu.addClass("oculto");
-            secAsientosInfo.removeClass("oculto");
-            selecAsientos.removeClass("oculto");
-            imputDni.removeAttr('disabled');
-            imputNombre.removeAttr('disabled');
-            imputApellido.removeAttr('disabled');
-            btnReservar.removeClass("oculto");
-            btnLiberar.addClass("oculto");
-            btnBuscar.addClass("oculto");
-            //btnCancelar.removeClass("oculto");
+            this.secMenu.addClass(`oculto`);
+            this.secAsientosInfo.removeClass(`oculto`);
+            this.selecAsientos.removeClass(`oculto`);
+            imputDni.removeAttr(`disabled`);
+            imputNombre.removeAttr(`disabled`);
+            imputApellido.removeAttr(`disabled`);
+            btnReservar.removeClass(`oculto`);
+            btnLiberar.addClass(`oculto`);
+            btnBuscar.addClass(`oculto`);
         }
         else if(this.opcion.val() == 2)
         {
-            secMenu.addClass("oculto");
-            secAsientosInfo.removeClass("oculto");
-            selecAsientos.removeClass("oculto");
-            imputDni.attr('disabled', true);
-            imputNombre.attr('disabled', true);
-            imputApellido.attr('disabled', true);
-            btnReservar.addClass("oculto");
-            btnLiberar.removeClass("oculto");
-            btnBuscar.addClass("oculto");
-            //btnCancelar.removeClass("oculto");
+            this.secMenu.addClass(`oculto`);
+            this.secAsientosInfo.removeClass(`oculto`);
+            this.selecAsientos.removeClass(`oculto`);
+            imputDni.attr(`disabled`, true);
+            imputNombre.attr(`disabled`, true);
+            imputApellido.attr(`disabled`, true);
+            btnReservar.addClass(`oculto`);
+            btnLiberar.removeClass(`oculto`);
+            btnBuscar.addClass(`oculto`);
         }
         else if(this.opcion.val() == 3)
         {
-            secMenu.addClass("oculto");
-            secAsientosInfo.removeClass("oculto");
-            selecAsientos.addClass("oculto");
-            imputDni.removeAttr('disabled');
-            imputNombre.attr('disabled', true);
-            imputApellido.attr('disabled', true);
-            btnReservar.addClass("oculto");
-            btnLiberar.addClass("oculto");
-            btnBuscar.removeClass("oculto");
-            //btnCancelar.removeClass("oculto");
+            this.secMenu.addClass(`oculto`);
+            this.secAsientosInfo.removeClass(`oculto`);
+            this.selecAsientos.addClass(`oculto`);
+            imputDni.removeAttr(`disabled`);
+            imputDni.focus();
+            imputNombre.attr(`disabled`, true);
+            imputApellido.attr(`disabled`, true);
+            btnReservar.addClass(`oculto`);
+            btnLiberar.addClass(`oculto`);
+            btnBuscar.removeClass(`oculto`);
         }
         else if(this.opcion.val() == 4)
         {
-            secMenu.addClass("oculto");
-            secAsientosInfo.addClass("oculto");
-            secListar.removeClass("oculto");
-            bus.listar();
+            this.secMenu.addClass(`oculto`);
+            this.secAsientosInfo.addClass(`oculto`);
+            this.secListar.removeClass(`oculto`);
+            avion.listar();
         }
         else
         {
-            alert("Opcion incorrecta. Vuelva a ingresar");
+            alert(`Opcion incorrecta. Vuelva a ingresar`);
             this.enfocar();
         }
     }
@@ -110,45 +106,41 @@ class Pasajero
     }
     limpiarTodo(todo)
     {
-        imputNombre.val("");
-        imputApellido.val("");
-        imputDni.val("");
+        imputNombre.val(``);
+        imputApellido.val(``);
+        imputDni.val(``);
         if(todo)
         {
-            imputAsiento.val("");
+            imputAsiento.val(``);
         }
     }
 }
 
-class Bus
+class Avion
 {
     constructor()
     {
+        this.contenedorListar = $(`#contenedorListar`);
+        this.tablero = $(`#tablero`);
         this.pasajeros = [];
         this.numAsiento = 0;
         this.crearCeldas(10);
-        this.celdas = $("td");
-        console.log(this.celdas);
+        this.celdas = $(`td`);
         for(let i = 0; i < this.celdas.length; i++)
         {
             this.pasajeros[i] = new Pasajero(undefined, undefined, undefined, undefined);
         }
-        console.log(this.celdas.length)
-        console.log(this.pasajeros);
     }
     redireccionar(event)
     {
         this.numAsiento = (event.target.textContent);
         imputAsiento.val(this.numAsiento);
-        console.log(this);
         this.pasajeros[this.numAsiento - 1].mostrar();
         imputDni.focus();
-        //contenedorListar.innerHTML = "";
     }
-    
     reservar()
     {
-        if(imputAsiento.val() != "" && imputNombre.val() != "" && imputApellido.val() != "" && imputDni.val() != "")
+        if(imputAsiento.val() != `` && imputNombre.val() != `` && imputApellido.val() != `` && imputDni.val() != ``)
         {
             this.pasajeros[this.numAsiento - 1] = new Pasajero(imputNombre.val(), imputApellido.val(), imputDni.val(), this.numAsiento);
             this.pasajeros[0].limpiarTodo(true);
@@ -156,14 +148,14 @@ class Bus
             {
                 if(this.celdas[i].textContent == this.numAsiento)
                 {
-                    this.celdas[i].classList.add("pintar");
+                    this.celdas[i].classList.add(`pintar`);
                     break;
                 }
             }
         }
         else
         {
-            alert("Faltan datos jkjkj");
+            alert(`Faltan datos`);
             imputNombre.focus();
         }
     }
@@ -178,7 +170,7 @@ class Bus
         {
             if(this.celdas[i].textContent == this.numAsiento)
             {
-                this.celdas[i].classList.remove("pintar");
+                this.celdas[i].classList.remove(`pintar`);
                 break;
             }
         }
@@ -197,51 +189,51 @@ class Bus
                 if(i == this.pasajeros.length - 1)
                 {
                     this.pasajeros[0].limpiarTodo(true);
-                    alert("No se encontro el DNI");
+                    alert(`No se encontro el DNI`);
                 }
             }
         }
-        //imputDni.val("");
         imputDni.focus();
     }
     listar()
     {
-        let contenedor = "";
+        let contenedor = ``;
         for(let i in this.pasajeros)
         {
             if(this.pasajeros[i].nombre != undefined)
             {
-                contenedor += "<p><b>Nombre:</b> " + this.pasajeros[i].nombre + "<br>";
-                contenedor += "<b>Apellido:</b> " + this.pasajeros[i].apellido + "<br>";
-                contenedor += "<b>DNI:</b> " + this.pasajeros[i].dni + "<br>";
-                contenedor += "<b>Asiento:</b> " + this.pasajeros[i].asiento + "</p>";
+                contenedor += `<h4><b>Nombre:</b> ${this.pasajeros[i].nombre}</h4>`;
+                contenedor += `<h4><b>Apellido:</b> ${this.pasajeros[i].apellido}</h4>`;
+                contenedor += `<h4><b>DNI:</b> ${this.pasajeros[i].dni}</h4>`;
+                contenedor += `<h4><b>Asiento:</b> ${this.pasajeros[i].asiento}</h4></br>`;
             }
         }
-        contenedorListar.html(contenedor);
+        this.contenedorListar.html(contenedor);
     }
     crearCeldas(total)
     {
         let numFilas = total/5;
         let numColum = total/2;
-        tablero.empty();
+        this.tablero.empty();
         for(let i = 0; i < numFilas; i++)
         {
-            let fila = $("<tr>");
+            let fila = $(`<tr>`);
             for(let j = 0; j < numColum; j++)
             {
-                let columna = $('<td>');
+                let columna = $(`<td>`);
                 columna.id = `${i}${j}`;
                 columna.text(i * numColum + j + 1);
-                columna.addClass("btn");
-                columna.addClass("btn-default");
+                columna.addClass(`btn`);
+                columna.addClass(`btn-default`);
                 columna.click((event) => this.redireccionar(event));
                 fila.append(columna);
             }
-            tablero.append(fila);
+            this.tablero.append(fila);
         }
     }
 }
-let bus = new Bus();
+
+let avion = new Avion();
 let apli = new Aplicacion();
 
 btnEnviar.click(function(e)
@@ -253,11 +245,11 @@ btnEnviar.click(function(e)
 btnReservar.click(function(e)
 {
     e.preventDefault();
-    bus.reservar();
+    avion.reservar();
     setTimeout(function()
     {
-        secMenu.removeClass("oculto");
-        secAsientosInfo.addClass("oculto");
+        apli.secMenu.removeClass(`oculto`);
+        apli.secAsientosInfo.addClass(`oculto`);
         apli.enfocar();
     }, 500);
 });
@@ -265,11 +257,11 @@ btnReservar.click(function(e)
 btnLiberar.click(function(e)
 {
     e.preventDefault();
-    bus.liberar();
+    avion.liberar();
     setTimeout(function()
     {
-        secMenu.removeClass("oculto");
-        secAsientosInfo.addClass("oculto");
+        apli.secMenu.removeClass(`oculto`);
+        apli.secAsientosInfo.addClass(`oculto`);
         apli.enfocar();
     }, 500);
 });
@@ -277,19 +269,19 @@ btnLiberar.click(function(e)
 btnBuscar.click(function(e)
 {
     e.preventDefault();
-    bus.buscar();
+    avion.buscar();
 });
 
 btnCancelar.click(function(e)
 {
     e.preventDefault();
-    secMenu.removeClass("oculto");
-    secAsientosInfo.addClass("oculto");
+    apli.secMenu.removeClass(`oculto`);
+    apli.secAsientosInfo.addClass(`oculto`);
     apli.enfocar();
 });
 
 btnCancelarListar.click(function(e)
 {
     btnCancelar.click();
-    secListar.addClass("oculto");
+    apli.secListar.addClass(`oculto`);
 });
